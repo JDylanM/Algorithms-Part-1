@@ -12,19 +12,16 @@
 
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
-import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
-import java.lang.Math;
 
 public class PercolationStats {
     private double[] values;
-    private int T = 0;
+    private int t = 0;
 
-    public PercolationStats(int n, int trials)
-    {
+    public PercolationStats(int n, int trials) {
         values = new double[trials];
-        T = trials;
-        for(int i=0; i < trials; i++) {
+        t = trials;
+        for (int i = 0; i < trials; i++) {
             Percolation current = new Percolation(n);
             while (!current.percolates()) {
                 int row = StdRandom.uniform(1, n+1);
@@ -32,9 +29,9 @@ public class PercolationStats {
                 current.open(row, col);
             }
             double openSites = (double) current.numberOfOpenSites();
-            double totalSites = (double)(n*n);
+            double totalSites = (double) (n*n);
             double threshold = openSites / totalSites;
-            values[i]=threshold;
+            values[i] = threshold;
         }
     }
 
@@ -50,12 +47,12 @@ public class PercolationStats {
 
     public double confidenceLo()
     {
-        return mean() - 1.96 * stddev() / Math.sqrt(T);
+        return mean() - 1.96 * stddev() / Math.sqrt(t);
     }
 
     public double confidenceHi()
     {
-        return mean() + 1.96 * stddev() / Math.sqrt(T);
+        return mean() + 1.96 * stddev() / Math.sqrt(t);
     }
 
     public static void main(String[] args)
@@ -67,8 +64,8 @@ public class PercolationStats {
         StdOut.printf("stddev                        : %f\n", stats.stddev());
         StdOut.printf("stddev                        : %f\n", stats.confidenceLo());
         StdOut.printf(
-            "95%% confidence interval       : [%f, %f]\n"
-            , stats.confidenceLo(), stats.confidenceHi()
+            "95%% confidence interval       : [%f, %f]\n",
+            stats.confidenceLo(), stats.confidenceHi()
         );
     }
 }
