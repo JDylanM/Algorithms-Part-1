@@ -18,6 +18,18 @@ public class Percolation {
     private int bottomVirtualSite;
     private int totalSites;
 
+    private int xyTo1D(int row, int col)
+    {
+        validate(row, col);
+        return (row-1) * gridSize + col-1;
+    }
+
+    private void validate(int row, int col)
+    {
+        if (row <= 0 || row > gridSize) throw new IndexOutOfBoundsException("row index out of bounds");
+        if (col <= 0 || col > gridSize) throw new IndexOutOfBoundsException("col index out of bounds");
+    }
+
     public Percolation(int n) {
         if (n <= 0) {
             throw new IllegalArgumentException("n must be bigger than 0");
@@ -80,22 +92,14 @@ public class Percolation {
         }
     }
 
-    private int xyTo1D(int row, int col)
-    {
-        validate(row, col);
-        return (row-1) * gridSize + col-1;
-    }
-
-    private void validate(int row, int col)
-    {
-        if (row <= 0 || row > gridSize) throw new IndexOutOfBoundsException("row index out of bounds");
-        if (col <= 0 || col > gridSize) throw new IndexOutOfBoundsException("col index out of bounds");
-    }
 
     public void open(int row, int col)
     {
         validate(row, col);
         int oneDimensional = xyTo1D(row, col);
+        if (grid[oneDimensional]) {
+            return;
+        }
         grid[oneDimensional] = true;
         connectToOpenNeighbors(oneDimensional);
         connectToVirtualSites(oneDimensional);
