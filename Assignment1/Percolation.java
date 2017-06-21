@@ -32,20 +32,20 @@ public class Percolation {
             }
         }
         
-        if( rightOfSite % gridSize != 0 ) {
+        if(rightOfSite % gridSize != 0 && rightOfSite < gridSize*gridSize) {
             if (grid[rightOfSite]) {
                 uf.union(currentSite, rightOfSite);
             }
         }
         
-        if( leftOfSite % gridSize != gridSize-1 ) {
+        if(leftOfSite % gridSize != gridSize-1 && leftOfSite > 0) {
             if (grid[leftOfSite]) {
                 uf.union(currentSite, leftOfSite);
             }
         }
         
         if( belowSite < gridSize*gridSize ) {
-            if(grid[belowSite]) {
+            if (grid[belowSite]) {
                 uf.union(currentSite, belowSite);
             }
         }
@@ -92,7 +92,13 @@ public class Percolation {
     
     public boolean isFull(int row, int col)
     {
-        return true;
+        int oneDimensional = xyTo1D(row, col);
+        for(int topRowSite=0; topRowSite < gridSize; topRowSite++) {
+            if(uf.connected(oneDimensional, topRowSite)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     
@@ -109,9 +115,12 @@ public class Percolation {
         percolation.open(3, 2);
         percolation.open(4, 1);
         percolation.open(3, 1);
+        percolation.open(1,1);
         System.out.println(percolation.uf.connected(10, 5));
         System.out.println(percolation.uf.connected(10, 11));
         System.out.println(percolation.uf.connected(10, 15));
         System.out.println(percolation.uf.connected(10, 9));
+        System.out.println(percolation.isFull(3, 1));
+        
     }
 }
