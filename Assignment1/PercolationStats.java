@@ -16,19 +16,22 @@ public class PercolationStats {
                 int col = StdRandom.uniform(1, n+1);
                 current.open(row, col);
             }
-            StdOut.println(current.numberOfOpenSites());
-            values[i]=current.numberOfOpenSites()/n;
+            double openSites = (double) current.numberOfOpenSites();
+            double totalSites = (double)(n*n);
+            double threshold = openSites / totalSites;
+            StdOut.println(threshold);
+            values[i]=threshold;
         }
     }
 
     public double mean()
     {
-        return 0.0;
+        return StdStats.mean(values);
     }
 
     public double stddev()
     {
-        return 0.0;
+        return StdStats.stddev(values);
     }
 
     public double confidenceLo()
@@ -46,5 +49,7 @@ public class PercolationStats {
         int n = Integer.parseInt(args[0]);
         int trials = Integer.parseInt(args[1]);
         PercolationStats stats = new PercolationStats(n, trials);
+        StdOut.println(stats.mean());
+        StdOut.println(stats.stddev());
     }
 }
