@@ -9,13 +9,47 @@
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
-    private boolean[][] grid;
+    private boolean[] grid;
     private int gridSize;
     private WeightedQuickUnionUF uf;
+    private int openSites = 0;
     
-    private void connectToOpenNeighbors(int row, int col) 
+    public int numberOfOpenSites()
     {
+        return openSites;
+    }
+    
+    private void connectToOpenNeighbors(int currentSite) 
+    {
+        int aboveSite = currentSite - gridSize;
+        int leftOfSite = currentSite - 1;
+        int rightOfSite = currentSite + 1;
+        int belowSite = currentSite + gridSize;
         
+        if( aboveSite > 0 ) {
+            if (grid[aboveSite]) {
+                uf.union(currentSite, aboveSite);
+            }
+        }
+        
+        if( rightOfSite % gridSize != 0 ) {
+            if (grid[rightOfSite]) {
+                uf.union(currentSite, rightOfSite);
+            }
+        }
+        
+        if( leftOfSite % gridSize != gridSize-1 ) {
+            if (grid[leftOfSite]) {
+                uf.union(currentSite, leftOfSite);
+            }
+        }
+        
+        if( belowSite < gridSize*gridSize ) {
+            if(grid[belowSite]) {
+                uf.union(currentSite, belowSite);
+            }
+        }
+            
     }
     
     private int xyTo1D(int row, int col)
@@ -35,21 +69,25 @@ public class Percolation {
         if(n <= 0) {
             throw new IllegalArgumentException("n must be bigger than 0");
         }
-        grid = new boolean[n][n];
+        int totalSites = n*n;
+        grid = new boolean[totalSites];
         gridSize = n;
-        uf = new WeightedQuickUnionUF(n);
+        uf = new WeightedQuickUnionUF(totalSites);
     }
     
     public void open(int row, int col)
     {
         validate(row, col);
-        grid[row-1][col-1] = true;
-        connectToOpenNeighbors(row, col);
+        int oneDimensional = xyTo1D(row,col);
+        grid[oneDimensional] = true;
+        connectToOpenNeighbors(oneDimensional);
+        openSites++;
     }
     
     public boolean isOpen(int row, int col)
     {
-        return true;
+        int oneDimensional = xyTo1D(row, col);
+        return grid[oneDimensional];
     }
     
     public boolean isFull(int row, int col)
@@ -57,10 +95,6 @@ public class Percolation {
         return true;
     }
     
-    public int numberOfOpenSites()
-    {
-        return 0;
-    }
     
     public boolean percolates()
     {
@@ -69,7 +103,15 @@ public class Percolation {
     
     public static void main(String[] args) 
     {
-        Percolation percolation = new Percolation(7);
+        Percolation percolation = new Percolation(5);
         System.out.println(percolation.xyTo1D(3,1));
+        percolation.open(2, 1);
+        percolation.open(3, 2);
+        percolation.open(4, 1);
+        percolation.open(3, 1);
+        System.out.println(percolation.uf.connected(10, 5));
+        System.out.println(percolation.uf.connected(10, 11));
+        System.out.println(percolation.uf.connected(10, 15));
+        System.out.println(percolation.uf.connected(10, 9));
     }
 }
