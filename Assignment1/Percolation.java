@@ -1,10 +1,11 @@
-/**
- * Wed Jun 21, 2017
- * The code models a percolation system. By using WeighteQuickUnionUF we can see if it percolates!
- * Grid starts from (1,1) to (n, n)
- */
-
-
+/******************************************************************************
+ *  Name:    Dylan
+ *
+ *  Date:    21/6 2017
+ *
+ *  Description:  Modeling Percolation using an N-by-N grid and Union-Find data
+ *                structures to determine the threshold. woot. woot.
+ ******************************************************************************/
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
@@ -17,9 +18,8 @@ public class Percolation {
     private int bottomVirtualSite;
     private int totalSites;
 
-    public Percolation(int n)
-    {
-        if(n <= 0) {
+    public Percolation(int n) {
+        if (n <= 0) {
             throw new IllegalArgumentException("n must be bigger than 0");
         }
         totalSites = n*n;
@@ -38,15 +38,12 @@ public class Percolation {
 
     private void connectToVirtualSites(int currentSite) {
         // if top row, connect to virtual top site
-        if ( currentSite < gridSize ) {
+        if (currentSite < gridSize) {
             uf.union(currentSite, topVirtualSite);
         }
 
-        System.out.println("currentSite " + Integer.toString(currentSite));
-        System.out.println("bigger Than " + Integer.toString(totalSites - gridSize));
-
         // same with bottom row
-        if ( currentSite >= totalSites - gridSize ) {
+        if (currentSite >= totalSites - gridSize) {
             uf.union(currentSite, bottomVirtualSite);
         }
     }
@@ -57,27 +54,26 @@ public class Percolation {
         int leftOfSite = currentSite - 1;
         int rightOfSite = currentSite + 1;
         int belowSite = currentSite + gridSize;
-        int totalSites = gridSize*gridSize;
 
-        if( aboveSite > 0 ) {
+        if (aboveSite > 0) {
             if (grid[aboveSite]) {
                 uf.union(currentSite, aboveSite);
             }
         }
 
-        if(rightOfSite % gridSize != 0 && rightOfSite < totalSites) {
+        if (rightOfSite % gridSize != 0 && rightOfSite < totalSites) {
             if (grid[rightOfSite]) {
                 uf.union(currentSite, rightOfSite);
             }
         }
 
-        if(leftOfSite % gridSize != gridSize-1 && leftOfSite > 0) {
+        if (leftOfSite % gridSize != gridSize-1 && leftOfSite > 0) {
             if (grid[leftOfSite]) {
                 uf.union(currentSite, leftOfSite);
             }
         }
 
-        if( belowSite < totalSites ) {
+        if (belowSite < totalSites) {
             if (grid[belowSite]) {
                 uf.union(currentSite, belowSite);
             }
@@ -99,7 +95,7 @@ public class Percolation {
     public void open(int row, int col)
     {
         validate(row, col);
-        int oneDimensional = xyTo1D(row,col);
+        int oneDimensional = xyTo1D(row, col);
         grid[oneDimensional] = true;
         connectToOpenNeighbors(oneDimensional);
         connectToVirtualSites(oneDimensional);
@@ -115,8 +111,7 @@ public class Percolation {
     public boolean isFull(int row, int col)
     {
         int oneDimensional = xyTo1D(row, col);
-        int topVirtualSite = gridSize*gridSize;
-        if(uf.connected(oneDimensional, topVirtualSite)) {
+        if (uf.connected(oneDimensional, topVirtualSite)) {
             return true;
         }
         return false;
