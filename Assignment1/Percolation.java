@@ -72,8 +72,8 @@ public class Percolation {
      */
     private void validate(int row, int col)
     {
-        if (row <= 0 || row > gridSize) throw new IndexOutOfBoundsException("row index out of bounds");
-        if (col <= 0 || col > gridSize) throw new IndexOutOfBoundsException("col index out of bounds");
+        if (row <= 0 || row > gridSize) throw new IllegalArgumentException("row index out of bounds");
+        if (col <= 0 || col > gridSize) throw new IllegalArgumentException("col index out of bounds");
     }
 
     /**
@@ -179,10 +179,7 @@ public class Percolation {
     public boolean isFull(int row, int col)
     {
         int oneDimensional = xyTo1D(row, col);
-        if (uf.connected(oneDimensional, topVirtualSite)) {
-            return true;
-        }
-        return false;
+        return uf.connected(oneDimensional, topVirtualSite);
     }
 
     /**
@@ -193,5 +190,12 @@ public class Percolation {
     public boolean percolates()
     {
         return uf.connected(topVirtualSite, bottomVirtualSite);
+    }
+
+    public static void main(String[] args)
+    {
+        Percolation test = new Percolation(5);
+        test.open(2,1);
+        System.out.println(test.isOpen(2,1));
     }
 }
