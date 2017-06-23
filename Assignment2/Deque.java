@@ -9,6 +9,7 @@ public class Deque<Item> implements Iterable<Item> {
     private class Node {
         private Item item;
         private Node next;
+        // Private node prev;
     }
 
 
@@ -34,7 +35,7 @@ public class Deque<Item> implements Iterable<Item> {
         first = new Node();
         first.item = item;
         first.next = oldfirst;
-        if (isEmpty()) last = first; // osäker på denna rad
+        if (isEmpty()) last = first; // osäker på denna rad behövs som addLast?
         n++;
         assert check();
     }
@@ -61,10 +62,10 @@ public class Deque<Item> implements Iterable<Item> {
     }
     public void removeLast() // should return Item
     {
+        // iterate till secondlast
+        //
         if (isEmpty()) throw new NoSuchElementException("Stack underflow");
-        Item item = first.item;        // save item to return
-        first = first.next;            // delete first node
-        n--;
+        Item item = last.item;
         assert check();
         return item;                   // return the saved item
     }
