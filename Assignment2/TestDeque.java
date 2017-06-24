@@ -55,4 +55,17 @@ public class TestDeque {
         deque.addLast(5);
         assertEquals(5, (int) deque.removeFirst());
     }
+
+    @Test
+    public void testIterator() {
+        Deque<Integer> deque = new Deque<>();
+        deque.addLast(5);
+        deque.addLast(4);
+        deque.addFirst(1);
+        deque.removeFirst();
+        deque.removeFirst();
+        deque.removeFirst();
+        deque.addLast(5);
+        assertEquals(5, (int) deque.removeFirst());
+    }
 }
