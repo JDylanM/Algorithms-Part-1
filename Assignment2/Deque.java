@@ -79,7 +79,9 @@ public class Deque<Item> implements Iterable<Item> {
         if (isEmpty()) throw new NoSuchElementException("Stack underflow");
         Item item = last.item;
         last = last.prev; // second last is now new last
-        last.next = null;
+        if (last != null) {
+            last.next = null;
+        }
         assert check();
         return item;                   // return the saved item
     }
@@ -136,5 +138,6 @@ public class Deque<Item> implements Iterable<Item> {
         Deque<Integer> test = new Deque<>();
         test.addLast(4);
         test.removeLast();
+
     }
 }
