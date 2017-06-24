@@ -9,7 +9,7 @@ public class Deque<Item> implements Iterable<Item> {
     private class Node {
         private Item item;
         private Node next;
-        // Private node prev;
+        private Node prev;
     }
 
 
@@ -31,11 +31,20 @@ public class Deque<Item> implements Iterable<Item> {
 
     public void addFirst(Item item)
     {
-        Node oldfirst = first;
-        first = new Node();
-        first.item = item;
-        first.next = oldfirst;
-        if (isEmpty()) last = first; // osäker på denna rad behövs som addLast?
+        if (isEmpty()) {
+            first = new Node();
+            first.item = item;
+            first.next = null;
+            first.prev = null;
+            last = first;
+        } else {
+            Node oldfirst = first;
+            first = new Node();
+            oldfirst.prev = first;
+            first.item = item;
+            first.next = oldfirst;
+            first.prev = null;
+        }
         n++;
         assert check();
     }
@@ -45,6 +54,7 @@ public class Deque<Item> implements Iterable<Item> {
         last = new Node();
         last.item = item;
         last.next = null;
+        last.prev = oldlast;
         if (isEmpty()) first = last;
         else oldlast.next = last;
         n++;
@@ -55,17 +65,21 @@ public class Deque<Item> implements Iterable<Item> {
     {
         if (isEmpty()) throw new NoSuchElementException("Stack underflow");
         Item item = first.item;        // save item to return
-        first = first.next;            // delete first node
+        first = first.next;
+        if(first != null) {
+            first.prev = null;
+        }
         n--;
         assert check();
         return item;                   // return the saved item
     }
-    public void removeLast() // should return Item
+    public Item removeLast() // should return Item
     {
-        // iterate till secondlast
-        //
+
         if (isEmpty()) throw new NoSuchElementException("Stack underflow");
         Item item = last.item;
+        last = last.prev; // second last is now new last
+        last.next = null;
         assert check();
         return item;                   // return the saved item
     }
@@ -120,5 +134,7 @@ public class Deque<Item> implements Iterable<Item> {
     public static void main(String[] args)
     {
         Deque<Integer> test = new Deque<>();
+        test.addLast(4);
+        test.removeLast();
     }
 }
