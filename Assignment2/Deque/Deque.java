@@ -135,9 +135,4 @@ public class Deque<Item> implements Iterable<Item> {
 
         return true;
     }
-
-    public static void main(String[] args)
-    {
-        Deque<Integer> test = new Deque<>();
-    }
 }
