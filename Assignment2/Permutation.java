@@ -2,17 +2,16 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdIn;
 
 public class Permutation {
-    public static void main(String[] args) {
-        String n = args[0];
-        int randomTimes = Integer.parseInt(n);
-        String[] words = StdIn.readAllStrings();
-        RandomizedQueue<String> que = new RandomizedQueue<>();
-        for( String inputWord: words ) {
-            que.enqueue(inputWord);
+    public static void main(String[] args)
+    {
+        RandomizedQueue<String> strs = new RandomizedQueue<String>();
+        while (!StdIn.isEmpty()) {
+            strs.enqueue(StdIn.readString());
         }
 
-        for( int i=0; i<randomTimes; i++) {
-            StdOut.println(que.sample());
+        int k = Integer.parseInt(args[0]);
+        for (int i = 0; i < k; i++) {
+            StdOut.println(strs.dequeue());
         }
     }
 }
