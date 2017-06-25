@@ -32,13 +32,21 @@ public class Deque<Item> implements Iterable<Item> {
     public void addFirst(Item item)
     {
         if (item == null) throw new IllegalArgumentException("Cant add null");
-        Node oldfirst = first;
-        first = new Node();
-        first.item = item;
-        first.next = oldfirst;
-        first.prev = null;
-        if (isEmpty()) last = first;
-        else oldfirst.prev = first;
+        if (isEmpty()) {
+            first = new Node();
+            first.item = item;
+            first.next = null;
+            first.prev = null;
+            last = first;
+        }
+        else {
+            Node oldfirst = first;
+            first = new Node();
+            oldfirst.prev = first;
+            first.item = item;
+            first.next = oldfirst;
+            first.prev = null;
+        }
         n++;
         assert check();
     }
@@ -61,9 +69,10 @@ public class Deque<Item> implements Iterable<Item> {
         if (isEmpty()) throw new NoSuchElementException("Stack underflow");
         Item item = first.item;        // save item to return
         first = first.next;
+        if (first != null) {
+            first.prev = null;
+        }
         n--;
-        if (isEmpty()) last = first;
-        else first.prev = null;
         assert check();
         return item;                   // return the saved item
     }
