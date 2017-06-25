@@ -13,13 +13,13 @@ public class Deque<Item> implements Iterable<Item> {
     }
 
 
-    public Deque()
-    {
+    public Deque() {
         first = null;
         last = null;
         n = 0;
         assert check();
     }
+
     public boolean isEmpty()
     {
         return first == null;
@@ -31,14 +31,15 @@ public class Deque<Item> implements Iterable<Item> {
 
     public void addFirst(Item item)
     {
-        if ( item == null ) throw new IllegalArgumentException("Cant add null");
+        if (item == null) throw new IllegalArgumentException("Cant add null");
         if (isEmpty()) {
             first = new Node();
             first.item = item;
             first.next = null;
             first.prev = null;
             last = first;
-        } else {
+        }
+        else {
             Node oldfirst = first;
             first = new Node();
             oldfirst.prev = first;
@@ -51,7 +52,7 @@ public class Deque<Item> implements Iterable<Item> {
     }
     public void addLast(Item item)
     {
-        if ( item == null ) throw new IllegalArgumentException("Cant add null");
+        if (item == null) throw new IllegalArgumentException("Cant add null");
         Node oldlast = last;
         last = new Node();
         last.item = item;
@@ -68,7 +69,7 @@ public class Deque<Item> implements Iterable<Item> {
         if (isEmpty()) throw new NoSuchElementException("Stack underflow");
         Item item = first.item;        // save item to return
         first = first.next;
-        if(first != null) {
+        if (first != null) {
             first.prev = null;
         }
         n--;
@@ -103,37 +104,37 @@ public class Deque<Item> implements Iterable<Item> {
             Item item = current.item;
             current = current.next;
             return item;
-       }
-   }
+        }
+    }
 
    // check internal invariants
-   private boolean check() {
+    private boolean check() {
 
-       // check a few properties of instance variable 'first'
-       if (n < 0) {
-           return false;
-       }
-       if (n == 0) {
-           if (first != null) return false;
-       }
-       else if (n == 1) {
-           if (first == null)      return false;
-           if (first.next != null) return false;
-       }
-       else {
-           if (first == null)      return false;
-           if (first.next == null) return false;
-       }
+        // check a few properties of instance variable 'first'
+        if (n < 0) {
+            return false;
+        }
+        if (n == 0) {
+            if (first != null) return false;
+        }
+        else if (n == 1) {
+            if (first == null)      return false;
+            if (first.next != null) return false;
+        }
+        else {
+            if (first == null)      return false;
+            if (first.next == null) return false;
+        }
 
-       // check internal consistency of instance variable n
-       int numberOfNodes = 0;
-       for (Node x = first; x != null && numberOfNodes <= n; x = x.next) {
-           numberOfNodes++;
-       }
-       if (numberOfNodes != n) return false;
+        // check internal consistency of instance variable n
+        int numberOfNodes = 0;
+        for (Node x = first; x != null && numberOfNodes <= n; x = x.next) {
+            numberOfNodes++;
+        }
+        if (numberOfNodes != n) return false;
 
-       return true;
-   }
+        return true;
+    }
 
     public static void main(String[] args)
     {
