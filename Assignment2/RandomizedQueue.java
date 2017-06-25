@@ -1,5 +1,7 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.StdOut;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
     private Item[] a;
@@ -34,12 +36,18 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     public void enqueue(Item item) {
-
+        if ( item == null ) throw new IllegalArgumentException("Cant add null");
+        if (n == a.length) resize(2*a.length);    // double size of array if necessary
+        a[n++] = item;                            // add item
     }
     public Item dequeue() {
         if (isEmpty()) throw new NoSuchElementException("Stack underflow");
-        Item item = a[n-1];
-        a[n-1] = null;                              // to avoid loitering
+        int random = StdRandom.uniform(0,n);
+        Item item = a[random];
+        if (random != n-1) {
+            a[random] = a[n-1];
+        }
+        a[n-1] = null;
         n--;
         // shrink size of array if necessary
         if (n > 0 && n == a.length/4) resize(a.length/2);
@@ -48,17 +56,19 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // need fix
     public Item sample() {
-        return a[n-1]
+        int random = StdRandom.uniform(0,n);
+        return a[random];
     }
     public Iterator<Item> iterator() {
-        return new RandomIterator;
+        return new RandomIterator();
     }
 
     private class RandomIterator implements Iterator<Item> {
         private int i;
 
-        public ReverseArrayIterator() {
+        public RandomIterator() {
             i = n-1;
+            StdRandom.shuffle(a);
         }
 
         public boolean hasNext() {
@@ -76,6 +86,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     public static void main(String[] args) {
-        System.out.println("tja");
+        RandomizedQueue<Integer> test = new RandomizedQueue<>();
+        test.enqueue(5);
+        test.enqueue(1);
+        test.enqueue(3);
+        test.enqueue(4);
+        for(Integer b: test) {
+            StdOut.println(b);
+        }
     }
 }
