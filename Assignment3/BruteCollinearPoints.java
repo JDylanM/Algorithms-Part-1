@@ -2,44 +2,46 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 import java.util.Arrays;
+import java.util.ArrayList;
 //Add
 
 public class BruteCollinearPoints {
-    private LineSegment[] privateSegments;
+    private LineSegment[] segments;
 
     public int numberOfSegments() {
-        return 0;
+        return segments.length;
     }
 
     public BruteCollinearPoints(Point[] points) {
-        LineSegment[] tmp = new LineSegment[points.length];
+        if (points == null) {
+            throw new IllegalArgumentException("argument is null");
+        }
+
+        ArrayList<LineSegment> foundSegments = new ArrayList<>();
         Arrays.sort(points);
         int nSegments = 0;
 
-        for(int p = 0; p < points.length; p++) {
-            for(int q = p+1; q < points.length; q++) {
-                for(int r = q+1; r < points.length; r++) {
+        for(int p = 0; p < points.length - 3; p++) {
+            for(int q = p+1; q < points.length - 2; q++) {
+                for(int r = q+1; r < points.length - 1; r++) {
                     for(int s = r+1; s < points.length; s++) {
                         if(points[p].slopeTo(points[q]) == points[p].slopeTo(points[r]) &&
                             points[p].slopeTo(points[r]) == points[p].slopeTo(points[s])) {
-
-                                tmp[nSegments++] = new LineSegment(points[p], points[s]);
-
-                                //https://stackoverflow.com/questions/2843366/how-to-add-new-elements-to-an-array
+                                foundSegments.add(new LineSegment(points[p], points[s]));
                             }
                     }
                 }
             }
         }
 
-        privateSegments = Arrays.copyOf(tmp, nSegments);
+        segments = foundSegments.toArray(new LineSegment[foundSegments.size()]);
 
 
 
     }
 
     public LineSegment[] segments() {
-        return privateSegments;
+        return Arrays.copyOf(segments, numberOfSegments());
     }
 
     public static void main(String[] args) {
@@ -60,7 +62,6 @@ public class BruteCollinearPoints {
         StdDraw.setYscale(0, 32768);
         for (Point p : points) {
             p.draw();
-            System.out.println(p.x);
         }
         StdDraw.show();
 
