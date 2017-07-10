@@ -1,5 +1,6 @@
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdOut;
 import java.util.Arrays;
 //Add
 
@@ -11,8 +12,9 @@ public class BruteCollinearPoints {
     }
 
     public BruteCollinearPoints(Point[] points) {
-        privateSegments = new LineSegment[points.length];
+        LineSegment[] tmp = new LineSegment[points.length];
         Arrays.sort(points);
+        int nSegments = 0;
 
         for(int p = 0; p < points.length; p++) {
             for(int q = p+1; q < points.length; q++) {
@@ -20,13 +22,22 @@ public class BruteCollinearPoints {
                     for(int s = r+1; s < points.length; s++) {
                         if(points[p].slopeTo(points[q]) == points[p].slopeTo(points[r]) &&
                             points[p].slopeTo(points[r]) == points[p].slopeTo(points[s])) {
+
+                                tmp[nSegments++] = new LineSegment(points[p], points[s]);
+
                                 //https://stackoverflow.com/questions/2843366/how-to-add-new-elements-to-an-array
                             }
                     }
                 }
             }
         }
+
+        privateSegments = Arrays.copyOf(tmp, nSegments);
+
+
+
     }
+
     public LineSegment[] segments() {
         return privateSegments;
     }
@@ -55,10 +66,10 @@ public class BruteCollinearPoints {
 
         // print and draw the line segments
         BruteCollinearPoints collinear = new BruteCollinearPoints(points);
-        //for (LineSegment segment : collinear.segments()) {
-        //    StdOut.println(segment);
-        //    segment.draw();
-        //}
+        for (LineSegment segment : collinear.segments()) {
+            StdOut.println(segment);
+            segment.draw();
+        }
         StdDraw.show();
     }
 }
