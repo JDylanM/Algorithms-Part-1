@@ -4,14 +4,9 @@ import edu.princeton.cs.algs4.StdOut;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashSet;
-//Add
 
 public class FastCollinearPoints {
     private LineSegment[] segments;
-
-    public int numberOfSegments() {
-        return segments.length;
-    }
 
     public FastCollinearPoints(Point[] points) {
         if (points == null) {
@@ -19,37 +14,32 @@ public class FastCollinearPoints {
         }
 
         for (int i = 0; i < points.length; i++) {
-            if(points[i] == null) {
+            if (points[i] == null) {
                 throw new IllegalArgumentException("Array contains null");
             }
 
-            if(i != 0) {
+            if (i != 0) {
                 Point prev = points[i-1];
                 Point current = points[i];
-                if(prev.compareTo(current) == 0) {
+                if (prev.compareTo(current) == 0) {
                     throw new IllegalArgumentException("Array contains duplicates");
                 }
             }
         }
 
-        //if duplicates
-
         HashSet<Point> addedSegments = new HashSet<>();
         ArrayList<LineSegment> foundSegments = new ArrayList<>();
-        for(int i = 0; i < points.length; i++) {
+        for (int i = 0; i < points.length; i++) {
             Point p = points[i];
             Point[] sortedArray = Arrays.copyOf(points, points.length);
             ArrayList<Point> adjacentPoints = new ArrayList<>();
             Point min = p;
             Point max = p;
 
-            //StdOut.printf("point p is %d, %d", p.x, p.y);
-            //StdOut.println("");
-
             adjacentPoints.add(p);
             Arrays.sort(sortedArray, p.slopeOrder());
-            //printSortedArray(sortedArray);
-            for(int j = 0; j < points.length; j++) {
+
+            for (int j = 0; j < points.length; j++) {
                 Point currentPoint = sortedArray[j];
 
                 if (currentPoint == p) continue;
@@ -57,15 +47,17 @@ public class FastCollinearPoints {
                     adjacentPoints.add(currentPoint);
                     min = min(min, currentPoint);
                     max = max(max, currentPoint);
-                } else if (collinear(adjacentPoints, currentPoint)) {
+                }
+                else if (collinear(adjacentPoints, currentPoint)) {
                     adjacentPoints.add(currentPoint);
                     min = min(min, currentPoint);
                     max = max(max, currentPoint);
-                } else {
+                }
+                else {
                     if (adjacentPoints.size() > 3) {
-                        if(noDuplicate(min, addedSegments)) {
+                        if (noDuplicate(min, addedSegments)) {
                             addedSegments.add(min);
-                            foundSegments.add(new LineSegment(min,max));
+                            foundSegments.add(new LineSegment(min, max));
                         }
                     }
                     adjacentPoints.subList(1, adjacentPoints.size()).clear();
@@ -75,9 +67,11 @@ public class FastCollinearPoints {
 
             }
         }
-        StdOut.println("END");
-
         segments = foundSegments.toArray(new LineSegment[foundSegments.size()]);
+    }
+
+    public int numberOfSegments() {
+        return segments.length;
     }
 
     private boolean noDuplicate(Point min, HashSet<Point> addedSegments) {
@@ -108,7 +102,7 @@ public class FastCollinearPoints {
     }
 
     private void printSortedArray(Point[] points) {
-        for(Point p: points) {
+        for (Point p: points) {
             StdOut.printf("(%d, %d)", p.x, p.y);
             StdOut.println("");
         }

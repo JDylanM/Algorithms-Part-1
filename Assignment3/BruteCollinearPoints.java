@@ -3,14 +3,10 @@ import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 import java.util.Arrays;
 import java.util.ArrayList;
-//Add
 
 public class BruteCollinearPoints {
     private LineSegment[] segments;
 
-    public int numberOfSegments() {
-        return segments.length;
-    }
 
     public BruteCollinearPoints(Point[] points) {
         if (points == null) {
@@ -21,23 +17,24 @@ public class BruteCollinearPoints {
         Arrays.sort(points);
         int nSegments = 0;
 
-        for(int p = 0; p < points.length - 3; p++) {
-            for(int q = p+1; q < points.length - 2; q++) {
-                for(int r = q+1; r < points.length - 1; r++) {
-                    for(int s = r+1; s < points.length; s++) {
-                        if(points[p].slopeTo(points[q]) == points[p].slopeTo(points[r]) &&
+        for (int p = 0; p < points.length - 3; p++) {
+            for (int q = p+1; q < points.length - 2; q++) {
+                for (int r = q+1; r < points.length - 1; r++) {
+                    for (int s = r+1; s < points.length; s++) {
+                        if (points[p].slopeTo(points[q]) == points[p].slopeTo(points[r]) &&
                             points[p].slopeTo(points[r]) == points[p].slopeTo(points[s])) {
-                                foundSegments.add(new LineSegment(points[p], points[s]));
-                            }
+                            foundSegments.add(new LineSegment(points[p], points[s]));
+                        }
                     }
                 }
             }
         }
 
         segments = foundSegments.toArray(new LineSegment[foundSegments.size()]);
+    }
 
-
-
+    public int numberOfSegments() {
+        return segments.length;
     }
 
     public LineSegment[] segments() {

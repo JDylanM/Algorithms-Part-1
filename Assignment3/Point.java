@@ -13,8 +13,8 @@ import edu.princeton.cs.algs4.StdDraw;
 
 public class Point implements Comparable<Point> {
 
-    public final int x;     // x-coordinate of this point
-    public final int y;     // y-coordinate of this point
+    private final int x;     // x-coordinate of this point
+    private final int y;     // y-coordinate of this point
 
     /**
      * Initializes a new point.
@@ -60,9 +60,9 @@ public class Point implements Comparable<Point> {
      */
     public double slopeTo(Point that) {
         /* YOUR CODE HERE */
-        if(that.y - y == 0 ) return +0.0;
-        if(that.x - x == 0 ) return Double.POSITIVE_INFINITY;
-        if(that.y - y == 0 && that.x - x == 0) return Double.NEGATIVE_INFINITY;
+        if (that.y - y == 0) return +0.0;
+        if (that.x - x == 0) return Double.POSITIVE_INFINITY;
+        if (that.y - y == 0 && that.x - x == 0) return Double.NEGATIVE_INFINITY;
         return (1.0 * that.y - y) / (that.x - x);
     }
 
@@ -80,9 +80,9 @@ public class Point implements Comparable<Point> {
      */
     public int compareTo(Point that) {
         /* YOUR CODE HERE */
-        if(x == that.x && y == that.y) return 0;
-        if(y < that.y) return -1;
-        if(y == that.y && x < that.x) return -1;
+        if (x == that.x && y == that.y) return 0;
+        if (y < that.y) return -1;
+        if (y == that.y && x < that.x) return -1;
         return +1;
     }
 
@@ -100,8 +100,8 @@ public class Point implements Comparable<Point> {
         public int compare(Point v, Point w) {
             double slopeV = slopeTo(v);
             double slopeW = slopeTo(w);
-            if(slopeV < slopeW) return -1;
-            if(slopeV > slopeW ) return +1;
+            if (slopeV < slopeW) return -1;
+            if (slopeV > slopeW) return +1;
             return 0;
         }
     }
