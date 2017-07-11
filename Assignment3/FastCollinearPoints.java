@@ -101,14 +101,6 @@ public class FastCollinearPoints {
         return false;
     }
 
-    private void printSortedArray(Point[] points) {
-        for (Point p: points) {
-            StdOut.printf("(%d, %d)", p.x, p.y);
-            StdOut.println("");
-        }
-        StdOut.println("END");
-    }
-
     public LineSegment[] segments() {
         return Arrays.copyOf(segments, numberOfSegments());
     }
