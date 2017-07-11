@@ -13,17 +13,33 @@ public class BruteCollinearPoints {
             throw new IllegalArgumentException("argument is null");
         }
 
+        Point[] sortedArray = Arrays.copyOf(points, points.length);
+        Arrays.sort(sortedArray);
+
+        for (int i = 0; i < sortedArray.length; i++) {
+            if (sortedArray[i] == null) {
+                throw new IllegalArgumentException("Array contains null");
+            }
+
+
+            if (i != 0) {
+                Point prev = sortedArray[i-1];
+                Point current = sortedArray[i];
+                if (prev.compareTo(current) == 0) {
+                    throw new IllegalArgumentException("Array contains duplicates");
+                }
+            }
+        }
+
         ArrayList<LineSegment> foundSegments = new ArrayList<>();
-        Arrays.sort(points);
-        int nSegments = 0;
 
         for (int p = 0; p < points.length - 3; p++) {
             for (int q = p+1; q < points.length - 2; q++) {
                 for (int r = q+1; r < points.length - 1; r++) {
                     for (int s = r+1; s < points.length; s++) {
-                        if (points[p].slopeTo(points[q]) == points[p].slopeTo(points[r]) &&
-                            points[p].slopeTo(points[r]) == points[p].slopeTo(points[s])) {
-                            foundSegments.add(new LineSegment(points[p], points[s]));
+                        if (sortedArray[p].slopeTo(sortedArray[q]) == sortedArray[p].slopeTo(sortedArray[r]) &&
+                            sortedArray[p].slopeTo(sortedArray[r]) == sortedArray[p].slopeTo(sortedArray[s])) {
+                            foundSegments.add(new LineSegment(sortedArray[p], sortedArray[s]));
                         }
                     }
                 }

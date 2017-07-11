@@ -3,7 +3,6 @@ import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class FastCollinearPoints {
     private LineSegment[] segments;
@@ -12,6 +11,9 @@ public class FastCollinearPoints {
         if (points == null) {
             throw new IllegalArgumentException("argument is null");
         }
+
+        Point[] sortedArray = Arrays.copyOf(points, points.length);
+        Arrays.sort(sortedArray);
 
         for (int i = 0; i < points.length; i++) {
             if (points[i] == null) {
@@ -27,11 +29,11 @@ public class FastCollinearPoints {
             }
         }
 
-        HashSet<Point> addedSegments = new HashSet<>();
+        ArrayList<Point> addedSegments = new ArrayList<>();
         ArrayList<LineSegment> foundSegments = new ArrayList<>();
         for (int i = 0; i < points.length; i++) {
             Point p = points[i];
-            Point[] sortedArray = Arrays.copyOf(points, points.length);
+            sortedArray = Arrays.copyOf(points, points.length);
             ArrayList<Point> adjacentPoints = new ArrayList<>();
             Point min = p;
             Point max = p;
@@ -41,8 +43,8 @@ public class FastCollinearPoints {
 
             for (int j = 0; j < points.length; j++) {
                 Point currentPoint = sortedArray[j];
-
                 if (currentPoint == p) continue;
+
                 if (adjacentPoints.size() == 1) {
                     adjacentPoints.add(currentPoint);
                     min = min(min, currentPoint);
@@ -50,8 +52,17 @@ public class FastCollinearPoints {
                 }
                 else if (collinear(adjacentPoints, currentPoint)) {
                     adjacentPoints.add(currentPoint);
+                    Point q = adjacentPoints.get(1);
                     min = min(min, currentPoint);
                     max = max(max, currentPoint);
+                    if (j == points.length - 1) {
+                        if (adjacentPoints.size() > 3) {
+                            if (noDuplicate(min, addedSegments)) {
+                                addedSegments.add(min);
+                                foundSegments.add(new LineSegment(min, max));
+                            }
+                        }
+                    }
                 }
                 else {
                     if (adjacentPoints.size() > 3) {
@@ -74,7 +85,7 @@ public class FastCollinearPoints {
         return segments.length;
     }
 
-    private boolean noDuplicate(Point min, HashSet<Point> addedSegments) {
+    private boolean noDuplicate(Point min, ArrayList<Point> addedSegments) {
         if (addedSegments.contains(min)) {
             return false;
         }
@@ -94,7 +105,6 @@ public class FastCollinearPoints {
     private boolean collinear(ArrayList<Point> points, Point currentPoint) {
         Point p = points.get(0);
         Point q = points.get(1);
-
         if (p.slopeTo(q) == p.slopeTo(currentPoint)) {
             return true;
         }
