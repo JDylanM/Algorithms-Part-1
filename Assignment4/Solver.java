@@ -25,10 +25,6 @@ public class Solver {
 
         Node initialNode = new Node(initial, null, 0);
         Board twin = initial.twin();
-        StdOut.println("------------");
-        StdOut.println(initial);
-        StdOut.println(twin);
-        StdOut.println("------------");
         Node initialTwinNode = new Node(twin, null, 0);
 
         priorityQueue.insert(initialNode);
@@ -41,28 +37,10 @@ public class Solver {
             dequeuedTwinNode = twinPriorityQueue.delMin();
 
             Iterable<Board> neighbors = dequeuedNode.board.neighbors();
-            for (Board neighbor: neighbors) {
-                if (dequeuedNode.prevNode != null && neighbor != dequeuedNode.prevNode.board) {
-                    Node approvedNeighbor = new Node(neighbor, dequeuedNode, moves);
-                    priorityQueue.insert(approvedNeighbor);
-                }
-                else {
-                    Node approvedNeighbor = new Node(neighbor, dequeuedNode, moves);
-                    priorityQueue.insert(approvedNeighbor);
-                }
-            }
+            insertValidNeighbors(dequeuedNode, neighbors, false);
 
             Iterable<Board> twinNeighbors = dequeuedTwinNode.board.neighbors();
-            for (Board neighbor: twinNeighbors) {
-                if (dequeuedTwinNode.prevNode != null && neighbor != dequeuedTwinNode.prevNode.board) {
-                    Node approvedNeighbor = new Node(neighbor, dequeuedTwinNode, moves);
-                    twinPriorityQueue.insert(approvedNeighbor);
-                }
-                else {
-                    Node approvedNeighbor = new Node(neighbor, dequeuedTwinNode, moves);
-                    twinPriorityQueue.insert(approvedNeighbor);
-                }
-            }
+            insertValidNeighbors(dequeuedTwinNode, twinNeighbors, true);
             moves++;
         }
 
@@ -72,6 +50,21 @@ public class Solver {
 
         goalNode = dequeuedNode;
         isSolvable = true;
+    }
+
+    private void insertValidNeighbors(Node dequeuedNode, Iterable<Board> neighbors, boolean twin) {
+        for (Board neighbor: neighbors) {
+            if (dequeuedNode.prevNode != null && neighbor != dequeuedNode.prevNode.board) {
+                Node approvedNeighbor = new Node(neighbor, dequeuedNode, moves);
+                if (twin) twinPriorityQueue.insert(approvedNeighbor);
+                else priorityQueue.insert(approvedNeighbor);
+            }
+            else {
+                Node approvedNeighbor = new Node(neighbor, dequeuedNode, moves);
+                if (twin) twinPriorityQueue.insert(approvedNeighbor);
+                else priorityQueue.insert(approvedNeighbor);
+            }
+        }
     }
 
     public boolean isSolvable() {

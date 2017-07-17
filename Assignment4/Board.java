@@ -114,7 +114,6 @@ public class Board {
         }
 
         if (zeroY - 1 >= 0) {
-            StdOut.println("left");
             int leftY = zeroY - 1;
             Board neighbor = horizontalNeighbor(leftY, zeroX, zeroY);
             neighbors.push(neighbor);
