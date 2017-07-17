@@ -2,6 +2,7 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
 import java.lang.Math;
 import java.util.Stack;
+import java.util.Arrays;
 
 public class Board {
     private int[][] board;
@@ -9,7 +10,7 @@ public class Board {
     private int manhattan = 0;
 
     public Board(int[][] blocks) {
-        board = blocks;
+        board = copy2D(blocks);
         n = board.length;
         computeManhattan();
     }
@@ -88,62 +89,79 @@ public class Board {
     }
 
     public Iterable<Board> neighbors() {
-        Stack<Board> neighbors = new Stack<>;
-        int zeroXPos = 0;
-        int zeroYpos = 0;
+        Stack<Board> neighbors = new Stack<>();
+        int zeroX = 0;
+        int zeroY = 0;
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; i++) {
+            for (int j = 0; j < n; j++) {
                 if (board[i][j] == 0) {
-                    zeroXPos = i;
-                    zeroYpos = j;
+                    zeroX = i;
+                    zeroY = j;
                 }
             }
         }
 
-        if (zeroXPos - 1 > 0) {
-            //abovetile exists
+        if (zeroX - 1 > 0) {
+            StdOut.println("above");
+            int aboveX = zeroX - 1;
+            Board neighbor = verticalNeighbor(aboveX, zeroX, zeroY);
+            neighbors.push(neighbor);
         }
 
-        if (zeroXPos + 1 < n) {
-            //belowtie exists
+        if (zeroX + 1 < n) {
+            StdOut.println("below");
+            int belowX = zeroX + 1;
+            Board neighbor = verticalNeighbor(belowX, zeroX, zeroY);
+            neighbors.push(neighbor);
         }
 
-        if (zeroYpos - 1 > 0) {
-            //lefttile exists
+        if (zeroY - 1 > 0) {
+            StdOut.println("left");
+            int leftY = zeroY - 1;
+            Board neighbor = horizontalNeighbor(leftY, zeroX, zeroY);
+            neighbors.push(neighbor);
         }
 
-        if (zeroYpos + 1 < n) {
-            // righttile exists
+        if (zeroY + 1 < n) {
+            StdOut.println("right");
+            int rightY = zeroY + 1;
+            Board neighbor = horizontalNeighbor(rightY, zeroX, zeroY);
+            neighbors.push(neighbor);
         }
+        return neighbors;
+    }
 
-        int aboveSite = currentSite - gridSize;
-        int leftOfSite = currentSite - 1;
-        int rightOfSite = currentSite + 1;
-        int belowSite = currentSite + gridSize;
+    private Board horizontalNeighbor(int horizontalY, int zeroX, int zeroY) {
+        // move
+        board[zeroX][zeroY] = board[zeroX][horizontalY];
+        board[zeroX][horizontalY] = 0;
+        Board neighbor = new Board(board);
+        // move back
+        board[zeroX][horizontalY] = board[zeroX][zeroY];
+        board[zeroX][zeroY] = 0;
+        return neighbor;
+    }
 
-        if (aboveSite > 0) {
-            if (grid[aboveSite]) {
-                uf.union(currentSite, aboveSite);
+    private int[][] copy2D(int[][] old) {
+        int[][] copy = new int[old.length][old.length];
+        for(int i=0; i<old.length; i++) {
+            for(int j=0; j<old[i].length; j++) {
+                copy[i][j]=old[i][j];
             }
         }
+        return copy;
+    }
 
-        if (rightOfSite % gridSize != 0 && rightOfSite < totalSites) {
-            if (grid[rightOfSite]) {
-                uf.union(currentSite, rightOfSite);
-            }
-        }
-
-        if (leftOfSite % gridSize != gridSize-1 && leftOfSite > 0) {
-            if (grid[leftOfSite]) {
-                uf.union(currentSite, leftOfSite);
-            }
-        }
-
-        if (belowSite < totalSites) {
-            if (grid[belowSite]) {
-                uf.union(currentSite, belowSite);
-            }
-        }
+    private Board verticalNeighbor(int verticalX, int zeroX, int zeroY) {
+        // move
+        board[zeroX][zeroY] = board[verticalX][zeroY];
+        board[verticalX][zeroY] = 0;
+        int[][] copy = Arrays.copyOf(board, board.length);
+        Board neighbor = new Board(copy);
+        // move back
+        board[verticalX][zeroY] = board[zeroX][zeroY];
+        board[zeroX][zeroY] = 0;
+        return neighbor;
     }
 
     public String toString() {
@@ -171,6 +189,10 @@ public class Board {
         System.out.println(initial.hamming());
         System.out.println(initial.manhattan());
         System.out.println(initial.isGoal());
-        StdOut.println(initial);
+        Iterable<Board> neighbors = initial.neighbors();
+        for (Board neighbor: neighbors) {
+            StdOut.println(neighbor);
+        };
+
     }
 }
