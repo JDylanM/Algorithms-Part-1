@@ -1,11 +1,12 @@
-import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdOut;
 import java.util.Stack;
 import java.util.Arrays;
 
+// check twin
+// check equals
+
 public class Board {
-    private int[][] board;
-    private int n; // n by n board;
+    private final int[][] board;
+    private final int n; // n by n board;
     private int manhattan = 0;
 
     public Board(int[][] blocks) {
@@ -68,16 +69,26 @@ public class Board {
     }
 
     public Board twin() {
-        // exchanges last block with first block
-        int tmpFirst = board[0][0];
-        int tmpLast = board[n-1][n-1];
-        board[0][0] = tmpLast;
-        board[n-1][n-1] = tmpFirst;
+        // exchanges last block with first blockequa
         Board twin = new Board(board);
-        // reverse
-        board[n-1][n-1] = tmpLast;
-        board[0][0] = tmpFirst;
+
+        if (twin.board[0][0] == 0) {
+            exch(twin.board, 1, 0, 1, 1);
+        }
+        else if (twin.board[0][1] == 0) {
+            exch(twin.board, 1, 0, 1, 1);
+        }
+        else {
+            exch(twin.board, 0, 0, 0, 1);
+        }
+
         return twin;
+    }
+
+    private void exch(int[][] matrix, int i, int j, int p, int q) {
+        int tmp = matrix[i][j];
+        matrix[i][j] = matrix[p][q];
+        matrix[p][q] = tmp;
     }
 
     public boolean equals(Object other) {
@@ -85,7 +96,13 @@ public class Board {
         if (other == null) return false;
         if (other.getClass() != this.getClass()) return false;
         Board that = (Board) other;
-        return that.toString() == toString();
+        if (that.dimension() != dimension()) return false;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (board[i][j] != (that.board)[i][j]) return false;
+            }
+        }
+        return true;
     }
 
     public Iterable<Board> neighbors() {

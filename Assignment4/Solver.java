@@ -15,7 +15,7 @@ public class Solver {
     private Comparator<Node> manhattanPriority = new Comparator<Node>() {
         @Override
         public int compare(Node a, Node b) {
-            return a.board.manhattan() + a.moves - b.board.manhattan() - b.moves;
+            return a.board.manhattan() + numMoves(a) - b.board.manhattan() - numMoves(b);
         }
     };
 
@@ -25,6 +25,10 @@ public class Solver {
 
         Node initialNode = new Node(initial, null, 0);
         Board twin = initial.twin();
+        /* StdOut.println("---------");
+        StdOut.println(twin);
+        StdOut.println(initial);
+        StdOut.println("---------"); */
         Node initialTwinNode = new Node(twin, null, 0);
 
         priorityQueue.insert(initialNode);
@@ -41,7 +45,6 @@ public class Solver {
 
             Iterable<Board> twinNeighbors = dequeuedTwinNode.board.neighbors();
             insertValidNeighbors(dequeuedTwinNode, twinNeighbors, true);
-            moves++;
         }
 
         if (dequeuedTwinNode.board.isGoal()) {
@@ -54,12 +57,7 @@ public class Solver {
 
     private void insertValidNeighbors(Node dequeuedNode, Iterable<Board> neighbors, boolean twin) {
         for (Board neighbor: neighbors) {
-            if (dequeuedNode.prevNode != null && neighbor != dequeuedNode.prevNode.board) {
-                Node approvedNeighbor = new Node(neighbor, dequeuedNode, moves);
-                if (twin) twinPriorityQueue.insert(approvedNeighbor);
-                else priorityQueue.insert(approvedNeighbor);
-            }
-            else {
+            if (dequeuedNode.prevNode == null || !neighbor.equals(dequeuedNode.prevNode.board)) {
                 Node approvedNeighbor = new Node(neighbor, dequeuedNode, moves);
                 if (twin) twinPriorityQueue.insert(approvedNeighbor);
                 else priorityQueue.insert(approvedNeighbor);
@@ -71,12 +69,31 @@ public class Solver {
         return isSolvable;
     }
     public int moves() {
-        return moves - 1;
+        if (!isSolvable) return -1;
+        Node current = goalNode;
+        int moves = 0;
+
+        while (current.prevNode != null) {
+            moves++;
+            current = current.prevNode;
+        }
+        return moves;
     }
+
+    private static int numMoves(Node node) {
+        int moves = 0;
+        Node current = node;
+
+        while (current.prevNode != null) {
+            moves++;
+            current = current.prevNode;
+        }
+        return moves;
+    }
+
     public Iterable<Board> solution() {
         ArrayList<Board> solution = new ArrayList<>();
         Node currentNode = goalNode;
-        StdOut.println("solution");
         while (currentNode.prevNode != null) {
             solution.add(currentNode.board);
             currentNode = currentNode.prevNode;
