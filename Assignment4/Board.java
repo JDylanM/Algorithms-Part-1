@@ -1,12 +1,11 @@
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdOut;
-import java.lang.Math;
 import java.util.Stack;
 import java.util.Arrays;
 
 public class Board {
     private int[][] board;
-    int n; // n by n board;
+    private int n; // n by n board;
     private int manhattan = 0;
 
     public Board(int[][] blocks) {
@@ -23,7 +22,7 @@ public class Board {
                 int horizontalDist = 0;
                 if (value != 0) {
                     horizontalDist = Math.abs(j - (value - 1) % n);
-                    verticalDist = Math.abs(((value - 1) / n ) - i);
+                    verticalDist = Math.abs(((value - 1) / n) - i);
                 }
                 manhattan += verticalDist + horizontalDist;
             }
@@ -58,7 +57,7 @@ public class Board {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 int currentPos = board[i][j];
-                if(n-1 == j && n-1 == i) break;
+                if (n-1 == j && n-1 == i) break;
                 if (currentPos != tileNumber) {
                     return false;
                 }
@@ -142,9 +141,9 @@ public class Board {
 
     private int[][] copy2D(int[][] old) {
         int[][] copy = new int[old.length][old.length];
-        for(int i=0; i<old.length; i++) {
-            for(int j=0; j<old[i].length; j++) {
-                copy[i][j]=old[i][j];
+        for (int i = 0; i < old.length; i++) {
+            for (int j = 0; j < old[i].length; j++) {
+                copy[i][j] = old[i][j];
             }
         }
         return copy;
@@ -172,22 +171,5 @@ public class Board {
             s.append("\n");
         }
         return s.toString();
-    }
-
-
-    public static void main(String[] args) {
-        // create initial board from file
-        In in = new In(args[0]);
-        int n = in.readInt();
-        int[][] blocks = new int[n][n];
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                blocks[i][j] = in.readInt();
-        Board initial = new Board(blocks);
-        Iterable<Board> neighbors = initial.neighbors();
-        for (Board neighbor: neighbors) {
-            StdOut.println(neighbor);
-        };
-
     }
 }
