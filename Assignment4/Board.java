@@ -54,10 +54,14 @@ public class Board {
     }
 
     public boolean isGoal() {
+        StdOut.println("isGOAl!");
+        StdOut.println(this);
         int tileNumber = 1; // number from 1 -> n
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n-1; j++) {
+            for (int j = 0; j < n; j++) {
                 int currentPos = board[i][j];
+                StdOut.printf("compare current %d with tilenumber %d \n", currentPos, tileNumber);
+                if(n-1 == j && n-1 == i) break;
                 if (currentPos != tileNumber) {
                     return false;
                 }
@@ -101,7 +105,7 @@ public class Board {
             }
         }
 
-        if (zeroX - 1 > 0) {
+        if (zeroX - 1 >= 0) {
             int aboveX = zeroX - 1;
             Board neighbor = verticalNeighbor(aboveX, zeroX, zeroY);
             neighbors.push(neighbor);
@@ -113,7 +117,8 @@ public class Board {
             neighbors.push(neighbor);
         }
 
-        if (zeroY - 1 > 0) {
+        if (zeroY - 1 >= 0) {
+            StdOut.println("left");
             int leftY = zeroY - 1;
             Board neighbor = horizontalNeighbor(leftY, zeroX, zeroY);
             neighbors.push(neighbor);
