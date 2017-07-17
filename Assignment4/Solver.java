@@ -31,12 +31,13 @@ public class Solver {
             Iterable<Board> neighbors = dequeuedNode.board.neighbors();
             StdOut.println(priorityQueue.size());
             for (Board neighbor: neighbors) {
-                StdOut.println(neighbor);
-                StdOut.println("here");
-                //if (dequeuedNode.prevNode != null && neighbor != dequeuedNode.prevNode.board) {
+                if (dequeuedNode.prevNode != null && neighbor != dequeuedNode.prevNode.board) {
                     Node approvedNeighbor = new Node(neighbor, dequeuedNode, moves);
                     priorityQueue.insert(approvedNeighbor);
-                //}
+                } else {
+                    Node approvedNeighbor = new Node(neighbor, dequeuedNode, moves);
+                    priorityQueue.insert(approvedNeighbor);
+                }
             }
             moves++;
         }

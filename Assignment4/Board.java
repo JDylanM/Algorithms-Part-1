@@ -54,13 +54,10 @@ public class Board {
     }
 
     public boolean isGoal() {
-        StdOut.println("isGOAl!");
-        StdOut.println(this);
         int tileNumber = 1; // number from 1 -> n
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 int currentPos = board[i][j];
-                StdOut.printf("compare current %d with tilenumber %d \n", currentPos, tileNumber);
                 if(n-1 == j && n-1 == i) break;
                 if (currentPos != tileNumber) {
                     return false;
