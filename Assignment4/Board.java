@@ -102,28 +102,24 @@ public class Board {
         }
 
         if (zeroX - 1 > 0) {
-            StdOut.println("above");
             int aboveX = zeroX - 1;
             Board neighbor = verticalNeighbor(aboveX, zeroX, zeroY);
             neighbors.push(neighbor);
         }
 
         if (zeroX + 1 < n) {
-            StdOut.println("below");
             int belowX = zeroX + 1;
             Board neighbor = verticalNeighbor(belowX, zeroX, zeroY);
             neighbors.push(neighbor);
         }
 
         if (zeroY - 1 > 0) {
-            StdOut.println("left");
             int leftY = zeroY - 1;
             Board neighbor = horizontalNeighbor(leftY, zeroX, zeroY);
             neighbors.push(neighbor);
         }
 
         if (zeroY + 1 < n) {
-            StdOut.println("right");
             int rightY = zeroY + 1;
             Board neighbor = horizontalNeighbor(rightY, zeroX, zeroY);
             neighbors.push(neighbor);
@@ -186,9 +182,6 @@ public class Board {
             for (int j = 0; j < n; j++)
                 blocks[i][j] = in.readInt();
         Board initial = new Board(blocks);
-        System.out.println(initial.hamming());
-        System.out.println(initial.manhattan());
-        System.out.println(initial.isGoal());
         Iterable<Board> neighbors = initial.neighbors();
         for (Board neighbor: neighbors) {
             StdOut.println(neighbor);
