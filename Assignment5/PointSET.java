@@ -26,7 +26,7 @@ public class PointSET {
             throw new IllegalArgumentException("argument is null");
         }
 
-        return true;
+        return set.contains(p);
     }
     public void draw() {
         for(Point2D p: set) {
