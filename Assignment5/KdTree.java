@@ -6,7 +6,7 @@ import edu.princeton.cs.algs4.SET;
 
 public class KdTree {
     private int size = 0;
-    private Node root;             // root of BST
+    public Node root;             // root of BST
 
     private static class Node {
         private Point2D point;      // the point
@@ -42,6 +42,7 @@ public class KdTree {
 
     private Node insert(Node node, Point2D insertingPoint, boolean vertical) {
         if (node == null) {
+            size++;
             return new Node(insertingPoint, null, null, null);
         }
 
@@ -55,7 +56,7 @@ public class KdTree {
             if (cmp < 0) node.lb  = insert(node.lb,  insertingPoint, true);
             else node.rt = insert(node.rt, insertingPoint, true);
         }
-        size++;
+
         return node;
     }
 
@@ -114,15 +115,18 @@ public class KdTree {
     */
 
     public static void main(String[] args) {
-        Point2D point = new Point2D(1,2);
-        Point2D point2 = new Point2D(3,4);
-        Point2D point3 = new Point2D(0,1);
-        Point2D point4 = new Point2D(2,2);
-        Point2D point5 = new Point2D(1,2);
+        Point2D point = new Point2D(1,1);
+        Point2D point2 = new Point2D(2,2);
+        Point2D point3 = new Point2D(3,3);
+        Point2D point4 = new Point2D(4,4);
+        Point2D point5 = new Point2D(5,5);
         KdTree tree = new KdTree();
         tree.insert(point);
-        tree.insert(point2);
+        tree.insert(point3);
         tree.insert(point4);
+        tree.insert(point5);
+        StdOut.println(tree.root.point.x());
+        StdOut.println(tree.size());
         StdOut.println(tree.contains(point3));
     }
 }
