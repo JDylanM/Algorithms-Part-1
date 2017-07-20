@@ -37,24 +37,52 @@ public class KdTree {
     public void insert(Point2D p) {
         if (p == null) throw new IllegalArgumentException("called insert() with a null key");
         if (contains(p)) return;
-        root = insert(root, p, true);
+
+        // handle first insert
+        if (size == 0) {
+            root = new Node(p, new RectHV(0, 0, 1, 1), null, null);
+            size++;
+        }
+        else {
+            root = insert(root, null, p, true, false);
+        }
     }
 
-    private Node insert(Node node, Point2D insertingPoint, boolean vertical) {
+    private Node insert(Node node, Node parentNode, Point2D insertingPoint, boolean vertical, boolean higher) {
         if (node == null) {
             size++;
-            return new Node(insertingPoint, null, null, null);
+            RectHV nodeRect = null;
+            RectHV pRect = parentNode.rect;
+            Point2D pPoint = parentNode.point;
+            StdOut.printf("current point %f, %f \n", insertingPoint.x(), insertingPoint.y());
+            if(!vertical && !higher){
+                StdOut.printf("horizontal node left \nxmin: %f\n ymin: %f\n xmax: %f\nymax: %f \n\n", pRect.xmin(), pRect.ymin(), pPoint.x(), pRect.ymax());
+                nodeRect = new RectHV(pRect.xmin(), pRect.ymin(), pPoint.x(), pRect.ymax());
+            }
+            if(!vertical && higher){
+                StdOut.printf("horizontal node right \nxmin: %f\n ymin: %f\n xmax: %f\nymax: %f \n\n", pPoint.x(), pRect.ymin(), pRect.xmax(), pRect.ymax());
+                nodeRect = new RectHV(pPoint.x(), pRect.ymin(), pRect.xmax(), pRect.ymax());
+            }
+            if(vertical && !higher){
+                StdOut.printf("vertical node left \nxmin: %f\n ymin: %f\n xmax: %f\nymax: %f \n\n", pRect.xmin(), pRect.ymax(), pRect.xmax(), pPoint.y());
+                nodeRect = new RectHV(pRect.xmin(), pRect.ymin(), pRect.xmax(), pPoint.y());
+            }
+            if(vertical && higher){
+                StdOut.printf("vertical node right \nxmin: %f\n ymin: %f\n xmax: %f\nymax: %f \n\n", pRect.xmin(), pPoint.y(), pRect.xmax(), pRect.ymax());
+                nodeRect = new RectHV(pRect.xmin(), pPoint.y(), pRect.xmax(), pRect.ymax());
+            }
+            return new Node(insertingPoint, nodeRect, null, null);
         }
 
         if (vertical) {
             double cmp = insertingPoint.x() - node.point.x();
-            if (cmp < 0) node.lb = insert(node.lb, insertingPoint, false);
-            else node.rt = insert(node.rt, insertingPoint, false);
+            if (cmp < 0) node.lb = insert(node.lb, node, insertingPoint, false, false);
+            else node.rt = insert(node.rt, node, insertingPoint, false, true);
         }
         else {
             int cmp = insertingPoint.compareTo(node.point);
-            if (cmp < 0) node.lb  = insert(node.lb,  insertingPoint, true);
-            else node.rt = insert(node.rt, insertingPoint, true);
+            if (cmp < 0) node.lb  = insert(node.lb, node, insertingPoint, true, false);
+            else node.rt = insert(node.rt, node, insertingPoint, true, true);
         }
 
         return node;
@@ -115,18 +143,17 @@ public class KdTree {
     */
 
     public static void main(String[] args) {
-        Point2D point = new Point2D(1,1);
-        Point2D point2 = new Point2D(2,2);
-        Point2D point3 = new Point2D(3,3);
-        Point2D point4 = new Point2D(4,4);
-        Point2D point5 = new Point2D(5,5);
+        Point2D point = new Point2D(0.2,0.5);
+        Point2D point2 = new Point2D(0.3,0.2);
+        Point2D point3 = new Point2D(0.1,0.2);
+        Point2D point4 = new Point2D(0.5,0.1);
+        Point2D point5 = new Point2D(0.3,0.9);
         KdTree tree = new KdTree();
         tree.insert(point);
+        tree.insert(point2);
         tree.insert(point3);
         tree.insert(point4);
         tree.insert(point5);
-        StdOut.println(tree.root.point.x());
-        StdOut.println(tree.size());
-        StdOut.println(tree.contains(point3));
+        StdOut.println(tree.contains(point2));
     }
 }
