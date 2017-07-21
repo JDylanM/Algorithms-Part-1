@@ -1,7 +1,8 @@
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdOut;
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue  ;
 import edu.princeton.cs.algs4.SET;
 
 public class KdTree {
@@ -13,12 +14,14 @@ public class KdTree {
         private RectHV rect;    // the axis-aligned rectangle corresponding to this node
         private Node lb;        // the left/bottom subtree
         private Node rt;        // the right/top subtree
+        private boolean vertical;
 
-        public Node(Point2D point, RectHV rect, Node lb, Node rt) {
+        public Node(Point2D point, RectHV rect, Node lb, Node rt, boolean vertical) {
             this.point = point;
             this.rect = rect;
             this.lb = lb;
             this.rt = rt;
+            this.vertical = vertical;
         }
     }
 
@@ -40,7 +43,7 @@ public class KdTree {
 
         // handle first insert
         if (size == 0) {
-            root = new Node(p, new RectHV(0, 0, 1, 1), null, null);
+            root = new Node(p, new RectHV(0, 0, 1, 1), null, null, true);
             size++;
         }
         else {
@@ -71,7 +74,7 @@ public class KdTree {
                 StdOut.printf("vertical node right \nxmin: %f\n ymin: %f\n xmax: %f\nymax: %f \n\n", pRect.xmin(), pPoint.y(), pRect.xmax(), pRect.ymax());
                 nodeRect = new RectHV(pRect.xmin(), pPoint.y(), pRect.xmax(), pRect.ymax());
             }
-            return new Node(insertingPoint, nodeRect, null, null);
+            return new Node(insertingPoint, nodeRect, null, null, vertical);
         }
 
         if (vertical) {
@@ -114,17 +117,22 @@ public class KdTree {
     }
 
     public void draw() {
-
+        for (Node n: nodes()) {
+            StdOut.println("tja");
+        }
     }
 
-    public Iterable<Point2D> range(RectHV rect) {
-        if (rect == null) {
-            throw new IllegalArgumentException("argument is null");
-        }
+    public Iterable<Node> nodes() {
+        LinkedList<Node> queue = new LinkedList<>();
+        nodes(root, queue);
+        return queue;
+    }
 
-        ArrayList<Point2D> points = new ArrayList<>();
-
-        return points;
+    private void nodes(Node x, LinkedList<Node> list) {
+        if (x == null) return;
+        list.add(x);
+        nodes(x.lb, list);
+        nodes(x.rt, list);
     }
 
 /*
@@ -154,6 +162,9 @@ public class KdTree {
         tree.insert(point3);
         tree.insert(point4);
         tree.insert(point5);
+        for(Node p:tree.nodes()) {
+            StdOut.println(p.point.x());
+        }
         StdOut.println(tree.contains(point2));
     }
 }
