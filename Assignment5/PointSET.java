@@ -50,11 +50,11 @@ public class PointSET {
     }
 
     public Point2D nearest(Point2D p) {
-        double minDistance = p.distanceTo(set.max());
+        double minDistance = p.distanceSquaredTo(set.max());
         Point2D minPoint = set.max();
         for (Point2D pointInSet: set) {
-            double distanceToPoint = p.distanceTo(pointInSet);
-            if (minDistance > distanceToPoint) {
+            double distanceToPoint = p.distanceSquaredTo(pointInSet);
+            if (minDistance > distanceToPoint ) {
                 minDistance = distanceToPoint;
                 minPoint = pointInSet;
             }

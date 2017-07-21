@@ -118,7 +118,6 @@ public class KdTree {
                 StdDraw.setPenColor(StdDraw.BLUE);
                 StdDraw.line(n.rect.xmin(), n.point.y(), n.rect.xmax(), n.point.y());
             }
-            StdOut.println(n.vertical);
         }
     }
 
@@ -168,13 +167,11 @@ public class KdTree {
         if (node == null) {
             return;
         }
-        if (champion.distanceTo(inputPoint) > node.point.distanceTo(inputPoint)) {
-            StdOut.println("champion changed");
-            StdOut.printf("champ is now %f, %f \n", node.point.x(), node.point.y());
+        if (champion.distanceSquaredTo(inputPoint) > node.point.distanceSquaredTo(inputPoint)) {
             champion = node.point;
         }
 
-        double currentDist = champion.distanceTo(inputPoint);
+        double currentDist = champion.distanceSquaredTo(inputPoint);
         if (node.lb == null && node.rt == null) {
             return;
         }
@@ -188,13 +185,13 @@ public class KdTree {
             Node closestRoot = node.lb;
             Node otherRoot = node.rt;
             // Phase 1 go to the subtree that is closest to the point
-            if (node.lb.rect.distanceTo(inputPoint) > node.rt.rect.distanceTo(inputPoint))  {
+            if (node.lb.rect.distanceSquaredTo(inputPoint) > node.rt.rect.distanceSquaredTo(inputPoint))  {
                 closestRoot = node.rt;
                 otherRoot = node.lb;
             }
 
             nearest(closestRoot, inputPoint);
-            if (champion.distanceTo(inputPoint) > otherRoot.rect.distanceTo(inputPoint)) {
+            if (champion.distanceSquaredTo(inputPoint) > otherRoot.rect.distanceSquaredTo(inputPoint)) {
                 nearest(otherRoot, inputPoint);
             }
         }
