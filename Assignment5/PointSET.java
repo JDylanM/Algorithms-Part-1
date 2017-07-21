@@ -29,7 +29,7 @@ public class PointSET {
         return set.contains(p);
     }
     public void draw() {
-        for(Point2D p: set) {
+        for (Point2D p: set) {
             p.draw();
         }
     }
@@ -40,7 +40,7 @@ public class PointSET {
 
         ArrayList<Point2D> points = new ArrayList<>();
 
-        for(Point2D p: set) {
+        for (Point2D p: set) {
             if (rect.contains(p)) {
                 points.add(p);
             }
@@ -54,7 +54,7 @@ public class PointSET {
         Point2D minPoint = set.max();
         for (Point2D pointInSet: set) {
             double distanceToPoint = p.distanceTo(pointInSet);
-            if  (minDistance > distanceToPoint ) {
+            if (minDistance > distanceToPoint) {
                 minDistance = distanceToPoint;
                 minPoint = pointInSet;
             }

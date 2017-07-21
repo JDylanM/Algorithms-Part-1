@@ -3,12 +3,11 @@ import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdDraw;
 import java.util.LinkedList;
-import java.util.Queue  ;
-import edu.princeton.cs.algs4.SET;
 
 public class KdTree {
     private int size = 0;
-    public Node root;             // root of BST
+    private Node root;             // root of BST
+    private Point2D champion;
 
     private static class Node {
         private Point2D point;      // the point
@@ -58,10 +57,10 @@ public class KdTree {
             RectHV nodeRect = null;
             RectHV pRect = parentNode.rect;
             Point2D pPoint = parentNode.point;
-            if(!vertical && !higher) nodeRect = new RectHV(pRect.xmin(), pRect.ymin(), pPoint.x(), pRect.ymax());
-            if(!vertical && higher) nodeRect = new RectHV(pPoint.x(), pRect.ymin(), pRect.xmax(), pRect.ymax());
-            if(vertical && !higher) nodeRect = new RectHV(pRect.xmin(), pRect.ymin(), pRect.xmax(), pPoint.y());
-            if(vertical && higher) nodeRect = new RectHV(pRect.xmin(), pPoint.y(), pRect.xmax(), pRect.ymax());
+            if (!vertical && !higher) nodeRect = new RectHV(pRect.xmin(), pRect.ymin(), pPoint.x(), pRect.ymax());
+            if (!vertical && higher) nodeRect = new RectHV(pPoint.x(), pRect.ymin(), pRect.xmax(), pRect.ymax());
+            if (vertical && !higher) nodeRect = new RectHV(pRect.xmin(), pRect.ymin(), pRect.xmax(), pPoint.y());
+            if (vertical && higher) nodeRect = new RectHV(pRect.xmin(), pPoint.y(), pRect.xmax(), pRect.ymax());
             return new Node(insertingPoint, nodeRect, null, null, vertical);
         }
 
@@ -86,9 +85,10 @@ public class KdTree {
 
     private boolean contains(Node node, Point2D point, boolean vertical) {
         if (point == null) throw new IllegalArgumentException("called contains with a null point");
+
         if (node == null) return false;
-        //StdOut.printf("node point %f %f vs searching point %f %f \n", node.point.x(), node.point.y(), point.x(), point.y());
         if (node.point.equals(point)) return true;
+
         if (vertical) {
             double cmp = point.x() - node.point.x();
             if (cmp < 0) return contains(node.lb, point, false);
@@ -122,7 +122,7 @@ public class KdTree {
         }
     }
 
-    public Iterable<Node> nodes() {
+    private Iterable<Node> nodes() {
         LinkedList<Node> list = new LinkedList<>();
         nodes(root, list);
         return list;
@@ -147,44 +147,56 @@ public class KdTree {
 
     private void points(Node x, LinkedList<Point2D> list, RectHV rangeRect) {
         if (x == null) return;
-        if (x.rect.intersects(rangeRect))
-        {
-            if(rangeRect.contains(x.point)) list.add(x.point);
+        if (x.rect.intersects(rangeRect)) {
+            if (rangeRect.contains(x.point)) list.add(x.point);
             points(x.lb, list, rangeRect);
             points(x.rt, list, rangeRect);
         }
     }
 
-/*
+
     public Point2D nearest(Point2D p) {
-        double minDistance = p.distanceTo(set.max());
-        Point2D minPoint = set.max();
-        for (Point2D pointInSet: set) {
-            double distanceToPoint = p.distanceTo(pointInSet);
-            if  (minDistance > distanceToPoint ) {
-                minDistance = distanceToPoint;
-                minPoint = pointInSet;
+        champion = root.point;
+
+        // StdOut.printf("champ was %f, %f \n", champion.x(), champion.y());
+        nearest(root, p);
+        // StdOut.printf("champ is now %f, %f \n", champion.x(), champion.y());
+        return champion;
+    }
+
+    private void nearest(Node node, Point2D inputPoint) {
+        if (node == null) {
+            return;
+        }
+        if (champion.distanceTo(inputPoint) > node.point.distanceTo(inputPoint)) {
+            StdOut.println("champion changed");
+            StdOut.printf("champ is now %f, %f \n", node.point.x(), node.point.y());
+            champion = node.point;
+        }
+
+        double currentDist = champion.distanceTo(inputPoint);
+        if (node.lb == null && node.rt == null) {
+            return;
+        }
+        else if (node.lb == null) {
+            nearest(node.rt, inputPoint);
+        }
+        else if (node.rt == null) {
+            nearest(node.lb, inputPoint);
+        }
+        else {
+            Node closestRoot = node.lb;
+            Node otherRoot = node.rt;
+            // Phase 1 go to the subtree that is closest to the point
+            if (node.lb.rect.distanceTo(inputPoint) > node.rt.rect.distanceTo(inputPoint))  {
+                closestRoot = node.rt;
+                otherRoot = node.lb;
+            }
+
+            nearest(closestRoot, inputPoint);
+            if (champion.distanceTo(inputPoint) > otherRoot.rect.distanceTo(inputPoint)) {
+                nearest(otherRoot, inputPoint);
             }
         }
-        return minPoint;
-    }
-    */
-
-    public static void main(String[] args) {
-        Point2D point = new Point2D(0.2,0.5);
-        Point2D point2 = new Point2D(0.3,0.2);
-        Point2D point3 = new Point2D(0.1,0.2);
-        Point2D point4 = new Point2D(0.5,0.1);
-        Point2D point5 = new Point2D(0.3,0.9);
-        KdTree tree = new KdTree();
-        tree.insert(point);
-        tree.insert(point2);
-        tree.insert(point3);
-        tree.insert(point4);
-        tree.insert(point5);
-        for(Node p:tree.nodes()) {
-            StdOut.println(p.point.x());
-        }
-        StdOut.println(tree.contains(point2));
     }
 }
