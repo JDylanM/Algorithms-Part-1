@@ -1,6 +1,7 @@
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdDraw;
 import java.util.LinkedList;
 import java.util.Queue  ;
 import edu.princeton.cs.algs4.SET;
@@ -118,7 +119,19 @@ public class KdTree {
 
     public void draw() {
         for (Node n: nodes()) {
-            StdOut.println("tja");
+            StdDraw.setPenColor(StdDraw.BLACK);
+            StdDraw.setPenRadius(0.01);
+            n.point.draw();
+            StdDraw.setPenRadius();
+            if (n.vertical) {
+                StdDraw.setPenColor(StdDraw.RED);
+                StdDraw.line(n.point.x(), n.rect.ymin(), n.point.x(), n.rect.ymax());
+            }
+            else {
+                StdDraw.setPenColor(StdDraw.BLUE);
+                StdDraw.line(n.rect.xmin(), n.point.y(), n.rect.xmax(), n.point.y());
+            }
+            StdOut.println(n.vertical);
         }
     }
 
