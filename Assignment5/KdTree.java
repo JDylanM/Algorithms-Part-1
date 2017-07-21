@@ -58,23 +58,10 @@ public class KdTree {
             RectHV nodeRect = null;
             RectHV pRect = parentNode.rect;
             Point2D pPoint = parentNode.point;
-            StdOut.printf("current point %f, %f \n", insertingPoint.x(), insertingPoint.y());
-            if(!vertical && !higher){
-                StdOut.printf("horizontal node left \nxmin: %f\n ymin: %f\n xmax: %f\nymax: %f \n\n", pRect.xmin(), pRect.ymin(), pPoint.x(), pRect.ymax());
-                nodeRect = new RectHV(pRect.xmin(), pRect.ymin(), pPoint.x(), pRect.ymax());
-            }
-            if(!vertical && higher){
-                StdOut.printf("horizontal node right \nxmin: %f\n ymin: %f\n xmax: %f\nymax: %f \n\n", pPoint.x(), pRect.ymin(), pRect.xmax(), pRect.ymax());
-                nodeRect = new RectHV(pPoint.x(), pRect.ymin(), pRect.xmax(), pRect.ymax());
-            }
-            if(vertical && !higher){
-                StdOut.printf("vertical node left \nxmin: %f\n ymin: %f\n xmax: %f\nymax: %f \n\n", pRect.xmin(), pRect.ymax(), pRect.xmax(), pPoint.y());
-                nodeRect = new RectHV(pRect.xmin(), pRect.ymin(), pRect.xmax(), pPoint.y());
-            }
-            if(vertical && higher){
-                StdOut.printf("vertical node right \nxmin: %f\n ymin: %f\n xmax: %f\nymax: %f \n\n", pRect.xmin(), pPoint.y(), pRect.xmax(), pRect.ymax());
-                nodeRect = new RectHV(pRect.xmin(), pPoint.y(), pRect.xmax(), pRect.ymax());
-            }
+            if(!vertical && !higher) nodeRect = new RectHV(pRect.xmin(), pRect.ymin(), pPoint.x(), pRect.ymax());
+            if(!vertical && higher) nodeRect = new RectHV(pPoint.x(), pRect.ymin(), pRect.xmax(), pRect.ymax());
+            if(vertical && !higher) nodeRect = new RectHV(pRect.xmin(), pRect.ymin(), pRect.xmax(), pPoint.y());
+            if(vertical && higher) nodeRect = new RectHV(pRect.xmin(), pPoint.y(), pRect.xmax(), pRect.ymax());
             return new Node(insertingPoint, nodeRect, null, null, vertical);
         }
 
@@ -136,9 +123,9 @@ public class KdTree {
     }
 
     public Iterable<Node> nodes() {
-        LinkedList<Node> queue = new LinkedList<>();
-        nodes(root, queue);
-        return queue;
+        LinkedList<Node> list = new LinkedList<>();
+        nodes(root, list);
+        return list;
     }
 
     private void nodes(Node x, LinkedList<Node> list) {
@@ -146,6 +133,26 @@ public class KdTree {
         list.add(x);
         nodes(x.lb, list);
         nodes(x.rt, list);
+    }
+
+    public Iterable<Point2D> range(RectHV rect) {
+        if (rect == null) {
+            throw new IllegalArgumentException("argument is null");
+        }
+
+        LinkedList<Point2D> list = new LinkedList<>();
+        points(root, list, rect);
+        return list;
+    }
+
+    private void points(Node x, LinkedList<Point2D> list, RectHV rangeRect) {
+        if (x == null) return;
+        if (x.rect.intersects(rangeRect))
+        {
+            if(rangeRect.contains(x.point)) list.add(x.point);
+            points(x.lb, list, rangeRect);
+            points(x.rt, list, rangeRect);
+        }
     }
 
 /*
